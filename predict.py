@@ -79,7 +79,6 @@ if __name__ == '__main__':
         os.makedirs(write_dname)
 
     submission = []
-    c = 0
     for img_path in glob.glob(config['train']['test_image_folder']+'*'):
         print(img_path)
         image = cv2.imread(img_path)
@@ -94,8 +93,6 @@ if __name__ == '__main__':
         
         cv2.imwrite(output_path, image)
         print("{}-boxes are detected. {} saved.".format(len(boxes), output_path))
-        c += 1
-        if c > 10: break
 
     submission.sort(key=lambda x: x[0])
     submission = [s[1] for s in submission]
