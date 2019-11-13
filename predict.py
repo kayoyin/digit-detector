@@ -71,7 +71,7 @@ if __name__ == '__main__':
                        config['model']['labels'],
                        config['model']['input_size'],
                        config['model']['anchors'])
-    yolo.load_weights(args.weights)
+    yolo.load_weights(config['pretrained']['full'], by_name=True)
 
     # 3. read image
     write_dname = "predictions"
@@ -80,19 +80,11 @@ if __name__ == '__main__':
 
     submission = []
     for img_path in glob.glob(config['train']['test_image_folder']+'*'):
-        print(img_path)
         image = cv2.imread(img_path)
+        img_fname = os.path.basename(img_path)
+        print(img_fname)
         boxes, probs = yolo.predict(image, float(args.threshold))
-        print(boxes, probs)
-        submission.append([int(img_path[13:-4]), get_dict(boxes, probs)])
-        labels = np.argmax(probs, axis=1) if len(probs) > 0 else [] 
-      
-        # 4. save detection result
-        image = draw_scaled_boxes(image, boxes, probs, config['model']['labels'])
-        output_path = os.path.join(write_dname, os.path.basename(img_path))
-        
-        cv2.imwrite(output_path, image)
-        print("{}-boxes are detected. {} saved.".format(len(boxes), output_path))
+        submission.append([int(img_fname[:-4]), get_dict(boxes, probs)])
 
     submission.sort(key=lambda x: x[0])
     submission = [s[1] for s in submission]
