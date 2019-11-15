@@ -31,11 +31,12 @@ def post_process(boxes, original_img, preprocessed_img):
     boxes[:, :, 3] = boxes[:, :, 3] / h * h2
     return boxes
 
-def get_dict(boxes, scores, labels, score_thresh=0.3):
+def get_dict(boxes, scores, labels, fname, score_thresh=0.3):
     output = {
         "bbox": [],
         "score": [],
-        "label": []
+        "label": [],
+        "name": fname
     }
 
     for box, score, label in zip(boxes, scores, labels):
@@ -86,12 +87,14 @@ if __name__ == '__main__':
         img_fname = os.path.basename(img_path)
         order.append(int(img_fname[:-4])-1)
 
+
         boxes = post_process(boxes, draw, image)
         labels = labels[0]
         scores = scores[0]
         boxes = boxes[0]
 
-        submission.append(get_dict(boxes, scores, labels))
+        submission.append(get_dict(boxes, scores, labels, img_path))
+
         """
         visualize_boxes(draw, boxes, labels, scores, class_labels=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
         if not os.path.exists('predicted/'):
@@ -100,7 +103,8 @@ if __name__ == '__main__':
         """
 
 
-    submission = np.array(submission)[order].tolist()
+
+    submission = [s for _,s in sorted(zip(order, submission))]
     with open("submission.json", 'w') as file:
         json.dump(submission, file)
     """
