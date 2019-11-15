@@ -31,12 +31,11 @@ def post_process(boxes, original_img, preprocessed_img):
     boxes[:, :, 3] = boxes[:, :, 3] / h * h2
     return boxes
 
-def get_dict(boxes, scores, labels, fname, score_thresh=0.3):
+def get_dict(boxes, scores, labels,, score_thresh=0.4):
     output = {
         "bbox": [],
         "score": [],
-        "label": [],
-        "name": fname
+        "label": []
     }
 
     for box, score, label in zip(boxes, scores, labels):
@@ -93,7 +92,7 @@ if __name__ == '__main__':
         scores = scores[0]
         boxes = boxes[0]
 
-        submission.append(get_dict(boxes, scores, labels, img_path))
+        submission.append(get_dict(boxes, scores, labels))
 
         """
         visualize_boxes(draw, boxes, labels, scores, class_labels=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
