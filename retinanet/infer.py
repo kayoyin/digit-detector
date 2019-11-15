@@ -13,8 +13,7 @@ import json
 
 from retina.utils import visualize_boxes
 
-MODEL_PATH = '../retinanet-digit-detector/resnet50_full.h5'
-IMAGE_PATH = '../sample/25.png'
+MODEL_PATH = 'resnet50.h5'
 
 def load_inference_model(model_path=os.path.join('snapshots', 'resnet.h5')):
     model = models.load_model(model_path, backbone_name='resnet50')
@@ -72,7 +71,8 @@ if __name__ == '__main__':
     boxes, scores, labels = model.predict_on_batch(images)
     print(boxes, scores, labels)
     """
-    for img_path in glob.glob('../sample/*'):
+    for img_path in glob.glob('dataset/test/*'):
+        print(img_path)
         image = read_image_bgr(img_path)
 
         draw = image.copy()
@@ -92,11 +92,12 @@ if __name__ == '__main__':
         boxes = boxes[0]
 
         submission.append(get_dict(boxes, scores, labels))
-
+        """
         visualize_boxes(draw, boxes, labels, scores, class_labels=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
         if not os.path.exists('predicted/'):
             os.makedirs('predicted/')
-        cv2.imsave('predicted/' + img_fname, draw)
+        cv2.imwrite('predicted/' + img_fname, draw)
+        """
 
 
     submission = np.array(submission)[order].tolist()
