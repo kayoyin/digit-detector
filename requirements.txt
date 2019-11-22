@@ -3,7 +3,7 @@ numpy
 pandas
 h5py
 tensorflow==1.14.0
-keras==2.1.1
+keras==2.2.4
 imgaug==0.2.6
 Pillow
 requests
@@ -12,3 +12,4 @@ sklearn
 pytest-cov
 codecov
 matplotlib
+keras-retinanet
