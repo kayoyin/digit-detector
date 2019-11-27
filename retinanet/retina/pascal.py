@@ -188,10 +188,10 @@ def read_image_bgr(path):
 
 if __name__ == '__main__':
     
-    dataset_path = "../samples"
-    
-    imgs_dir = "../samples/JPEGImages"
-    anns_dir = "../samples/Annotations"
+    dataset_path = "../dataset/valid"
+
+    imgs_dir = "../dataset/valid_imgs"
+    anns_dir = "../dataset/valid_anns"
     generator = PascalVocGenerator(imgs_dir, anns_dir)
     print(len(generator))
 

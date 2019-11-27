@@ -185,8 +185,7 @@ def create_callbacks(model, training_model, prediction_model, validation_generat
         checkpoint = keras.callbacks.ModelCheckpoint(
             os.path.join(
                 args.snapshot_path,
-                '{backbone}_{dataset_type}_{{epoch:02d}}.h5'.format(backbone=args.backbone,
-                                                                    dataset_type=args.dataset_type)
+                'checkpoint.h5'
             ),
             verbose=1,
             # save_best_only=True,
@@ -225,24 +224,18 @@ def create_generators(args, preprocess_image):
         'preprocess_image': preprocess_image,
     }
 
-    #     # create random transform generator for augmenting training data
-    #     if args.random_transform:
-    #         transform_generator = random_transform_generator(
-    #             min_rotation=-0.1,
-    #             max_rotation=0.1,
-    #             min_translation=(-0.1, -0.1),
-    #             max_translation=(0.1, 0.1),
-    #             min_shear=-0.1,
-    #             max_shear=0.1,
-    #             min_scaling=(0.9, 0.9),
-    #             max_scaling=(1.1, 1.1),
-    #             flip_x_chance=0.5,
-    #             flip_y_chance=0.5,
-    #         )
-    #     else:
-    #         transform_generator = random_transform_generator(flip_x_chance=0.5)
-
-    transform_generator = random_transform_generator()
+    transform_generator = random_transform_generator(
+                     min_rotation=-0.1,
+                     max_rotation=0.1,
+                     min_translation=(-0.1, -0.1),
+                     max_translation=(0.1, 0.1),
+                     min_shear=-0.1,
+                     max_shear=0.1,
+                     min_scaling=(0.9, 0.9),
+                     max_scaling=(1.1, 1.1),
+                     flip_x_chance=0.5,
+                     flip_y_chance=0.5,
+                 )
     train_generator = PascalVocGenerator(
         args.train_imgs_dir,
         args.train_anns_dir,
@@ -380,6 +373,7 @@ def main(args=None):
     if args.config:
         args.config = read_config_file(args.config)
 
+
     # create the generators
     train_generator, validation_generator = create_generators(args, backbone.preprocess_image)
 
@@ -398,14 +392,14 @@ def main(args=None):
             anchor_params = parse_anchor_parameters(args.config)
         prediction_model = retinanet_bbox(model=model, anchor_params=anchor_params)
     else:
-        weights = '../retina.h5'
+        weights = 'model_5.h5'
         print('Loading, this may take a second...')
         model, training_model, prediction_model = create_models(
             backbone_retinanet=backbone.retinanet,
             num_classes=train_generator.num_classes(),
             weights=weights,
             multi_gpu=args.multi_gpu,
-            freeze_backbone=args.freeze_backbogine,
+            freeze_backbone=args.freeze_backbone,
             lr=args.lr,
             config=args.config
         )
@@ -451,8 +445,6 @@ def main(args=None):
     )
 
 
-# keras_retinanet/bin/train.py pascal /path/to/VOCdevkit/VOC2007
-# python main.py pascal samples
 if __name__ == '__main__':
     # train_imgs_dir, train_anns_dir, valid_imgs_dir, valid_anns_dir
     main(["pascal",
@@ -460,22 +452,4 @@ if __name__ == '__main__':
           "../dataset/train_anns",
           "../dataset/valid_imgs",
           "../dataset/valid_anns"])
-
-# Epoch 00008: saving model to ./snapshots/resnet50_pascal_08.h5
-# Epoch 9/50
-# 10000/10000 [==============================] - 2320s 232ms/step - loss: 0.9907 - regression_loss: 0.8740 - classification_loss: 0.1167
-# Running network: 100% (13068 of 13068) |#############################################################################################################################| Elapsed Time: 0:07:08 Time:  0:07:08
-# Parsing annotations: 100% (13068 of 13068) |#########################################################################################################################| Elapsed Time: 0:00:02 Time:  0:00:02
-# 1744 instances of class 10 with average precision: 0.8420
-# 5099 instances of class 1 with average precision: 0.7849
-# 4149 instances of class 2 with average precision: 0.8515
-# 2882 instances of class 3 with average precision: 0.7990
-# 2523 instances of class 4 with average precision: 0.8098
-# 2384 instances of class 5 with average precision: 0.8293
-# 1977 instances of class 6 with average precision: 0.8062
-# 2019 instances of class 7 with average precision: 0.8341
-# 1660 instances of class 8 with average precision: 0.7755
-# 1595 instances of class 9 with average precision: 0.8154
-# mAP: 0.8148
-
 
