@@ -45,7 +45,7 @@ from keras_retinanet.utils.keras_version import check_keras_version
 from keras_retinanet.utils.model import freeze as freeze_model
 from keras_retinanet.utils.transform import random_transform_generator
 
-from retina.pascal import PascalVocGenerator
+from pascal import PascalVocGenerator
 
 
 def makedirs(path):

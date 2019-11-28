@@ -35,7 +35,7 @@ from keras_retinanet.utils.transform import random_transform_generator
 from keras_retinanet.utils.eval import _get_detections
 
 
-from retina.pascal import PascalVocGenerator
+from pascal import PascalVocGenerator
 
 from main import *
 
