@@ -102,15 +102,15 @@ def construct_all_data(img_folder,mat_file_name,h5_name):
         df1.to_hdf(os.path.join(img_folder, "2"+h5_name), 'table')
 
 def construct_annotation_files(annotations):
-    if not os.path.exists("dataset/train_anns"):
-        os.makedirs("dataset/train_anns")
+    if not os.path.exists("dataset/val_anns"):
+        os.makedirs("dataset/val_anns")
 
     for i in range(len(annotations['digitStruct']['bbox'])):
         image_name = get_name(i, annotations)
-        img = cv2.imread("dataset/train/"+image_name)
+        img = cv2.imread("dataset/valid/"+image_name)
         ann = get_bbox(i, annotations)
 
-        with open("dataset/train_anns/{}.xml".format(image_name[:-4]), 'w') as file:
+        with open("dataset/val_anns/{}.xml".format(image_name[:-4]), 'w') as file:
             file.write("<annotation>\n")
             file.write("  <filename>" + image_name + "</filename>\n")
             file.write("  <size>\n")

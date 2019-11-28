@@ -60,7 +60,6 @@ def infer(
     model,
     max_detections=100,
 ):
-    # gather all detections and annotations
     all_detections = _get_detections(generator, model, max_detections=max_detections)
     submission = []
 
@@ -71,10 +70,9 @@ def infer(
         for label in range(generator.num_classes()):
             detections = all_detections[i][label]
             for d in detections:
-                if d[4] > 0.7:
-                    labels.append(label)
-                    boxes.append(d[:4])
-                    scores.append(d[4])
+                labels.append(label)
+                boxes.append(d[:4])
+                scores.append(d[4])
 
         submission.append(to_dict(labels, boxes, scores))
 
@@ -106,5 +104,5 @@ if __name__ == "__main__":
     run(["pascal",
           "dataset/train_imgs",
           "dataset/train_anns",
-          "dataset/test_imgs",
+          "dataset/val_imgs",
           "dataset/train_anns"])
